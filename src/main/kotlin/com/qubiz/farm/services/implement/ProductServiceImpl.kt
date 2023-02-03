@@ -85,6 +85,11 @@ class ProductServiceImpl(
         return response.responseObject(res.content, res.totalElements)
     }
 
+    override fun searchProductByCategory(categoryId: Long, page: Int, size: Int): Map<String, Any> {
+        val res = productRepo.findAllByCategory(categoryId, PageRequest.of(page, size)).map { it.pToResponse() }
+        return response.responseObject(res.content, res.totalElements)
+    }
+
     override fun update(id: Long, req: manageProductRequest): Product {
         val pro = productRepo.findById(id).orElseThrow { CustomException(400, "Product not found")}
         pro.name = req.name

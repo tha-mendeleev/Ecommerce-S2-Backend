@@ -18,5 +18,7 @@ interface ProductService: BaseService<Product, Long> {
     fun getProductDetail(id: Long): Map<String, Any>
     fun createProduct(req: manageProductRequest): Product
     fun searchProduct(startPrice: Double?, toPrice: Double?, query: String, page: Int, size: Int): Map<String, Any>
+    fun searchProductByCategory(categoryId: Long, page: Int, size: Int): Map<String, Any>
     fun update(id: Long, req: manageProductRequest): Product
+
 }

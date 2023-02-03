@@ -57,4 +57,9 @@ class CustomerController(
     fun searchProduct(@RequestParam(name = "start-price") startPrice: Double?, @RequestParam(name = "to-price") toPrice: Double?, @RequestParam query: String, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") size: Int ): Any {
         return productService.searchProduct(startPrice, toPrice, query, page, size)
     }
+
+    @GetMapping("/view-product/by-category/{id}")
+    fun searchProductByCategory(@PathVariable id: Long, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "20") size: Int): Any {
+        return productService.searchProductByCategory(id, page, size)
+    }
 }
