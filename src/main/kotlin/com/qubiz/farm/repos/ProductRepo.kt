@@ -18,7 +18,7 @@ interface ProductRepo: BaseRepo<Product, Long> {
 
     @Query(
         """
-           select p.* from Product p
+           select p.* from product p
             inner join product_category pc 
             on p.id = pc.product_id
             where pc.category_id = :categoryId
@@ -26,7 +26,7 @@ interface ProductRepo: BaseRepo<Product, Long> {
         """,
         nativeQuery = true,
         countQuery = """
-            select count(p.id) from Product p
+            select count(p.id) from product p
             inner join product_category pc 
             on p.id = pc.product_id
             where pc.category_id = :categoryId

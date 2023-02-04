@@ -23,8 +23,7 @@ interface StoreRepo: BaseRepo<Store, Long> {
         """
             SELECT p FROM Product p
             WHERE p.store.id = :storeId
-            GROUP BY p.categories
-            ORDER BY p.sold
+            ORDER BY p.sold, p.lastModified DESC
         """
     )
     fun getProductFromStore(storeId: Long, pageable: Pageable): Page<Product>

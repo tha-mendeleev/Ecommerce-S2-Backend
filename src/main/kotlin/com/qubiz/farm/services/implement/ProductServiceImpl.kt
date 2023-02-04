@@ -29,8 +29,8 @@ class ProductServiceImpl(
         return productRepo.findById(id).orElseThrow { CustomException(404, "Product not found") }.pToDetailResponse()
     }
 
-    override fun getProductListByUser(storeId: Long, page: Int, size: Int): Map<String, Any> {
-        val res = storeRepo.getProductFromStore(storeId, PageRequest.of(page, size))
+    override fun getStoreProductListByCustomer(storeId: Long, page: Int, size: Int): Map<String, Any> {
+        val res = storeRepo.getProductFromStore(storeId, PageRequest.of(page, size)).map{ it.pToResponse() }
         return response.responseObject(res.content, res.totalElements)
     }
 
@@ -51,7 +51,7 @@ class ProductServiceImpl(
         return response.responseObject(pro)
     }
 
-    override fun createProduct(req: manageProductRequest): Product {
+    override fun createProduct(req: manageProductRequest): ViewProductResponse {
         val createdBy = userContext.getCurrentUser() ?: throw CustomException(403, "Something went wrong please try again.")
         val store = storeRepo.getStoreByOwnerId(createdBy.id!!) ?: throw CustomException(400, "Storeless seller oops!!")
         val product = Product(
@@ -63,7 +63,7 @@ class ProductServiceImpl(
             categories = req.categories as MutableList,
             store = store
         )
-        return productRepo.save(product)
+        return productRepo.save(product).pToResponse()
     }
 
     override fun searchProduct(startPrice: Double?, toPrice: Double?, query: String, page: Int, size: Int): Map<String, Any> {
@@ -90,7 +90,7 @@ class ProductServiceImpl(
         return response.responseObject(res.content, res.totalElements)
     }
 
-    override fun update(id: Long, req: manageProductRequest): Product {
+    override fun update(id: Long, req: manageProductRequest): ViewProductResponse {
         val pro = productRepo.findById(id).orElseThrow { CustomException(400, "Product not found")}
         pro.name = req.name
         pro.qty = req.qty
@@ -98,15 +98,7 @@ class ProductServiceImpl(
         pro.price = req.price
         pro.description = req.description
         pro.categories = req.categories as MutableList
-        return productRepo.save(pro)
-    }
-
-    override fun create(req: Product): Product {
-        return Product()
-    }
-
-    override fun update(req: Product): Product {
-        return Product()
+        return productRepo.save(pro).pToResponse()
     }
 
     override fun remove(req: Long) {

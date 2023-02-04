@@ -23,6 +23,7 @@ class CustomerController(
     private val categoryService: CategoryService,
     private val response: Response
 ) {
+
     @PostMapping("/cart/add-to-cart")
     fun addProductToCart(@RequestBody req: AddToCartRequest): Any {
         return response.responseObject(shoppingCartService.addProductToCart(req.productId, req.cartId, req.qty))
@@ -61,5 +62,10 @@ class CustomerController(
     @GetMapping("/view-product/by-category/{id}")
     fun searchProductByCategory(@PathVariable id: Long, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "20") size: Int): Any {
         return productService.searchProductByCategory(id, page, size)
+    }
+
+    @GetMapping("/view-product/store/{storeId}")
+    fun viewStoreProductByCustomer(@PathVariable storeId: Long, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "20") size: Int): Any {
+        return productService.getStoreProductListByCustomer(storeId, page, size)
     }
 }

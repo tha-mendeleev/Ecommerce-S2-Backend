@@ -27,7 +27,6 @@ class AuthController(private val authService: AuthService, ) {
     @Autowired
     private lateinit var response: Response
 
-
     @PostMapping("/login")
     fun authenticate(@RequestBody req: AuthRequest): Map<String, Any> {
         val user = jwtUserDetailsService.loadUserByEmail(req.email)

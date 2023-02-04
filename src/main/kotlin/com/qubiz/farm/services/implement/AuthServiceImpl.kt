@@ -30,7 +30,7 @@ class AuthServiceImpl(
         val user = jwtToken.getUserPrincipleFromRequest(http)
         val token = jwtToken.generateToken(user)
         return response.responseObject(
-            mapOf( "token" to token, "role" to "${user.authorities?.map {it.authority}}")
+            mapOf( "token" to token, "role" to user.authorities?.get(0)?.authority)
         )
     }
 }
