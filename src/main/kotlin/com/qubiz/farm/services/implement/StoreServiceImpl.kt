@@ -23,6 +23,9 @@ class StoreServiceImpl(
 
     @Value("\${store-image-path}")
     private lateinit var storeDir: String
+    override fun getStoreDetailByOwner(): Store {
+        return checkStoreOwner()
+    }
 
     @Transactional
     override fun uploadProfileImage(filename: MultipartFile): Map<String, Any> {
@@ -44,9 +47,9 @@ class StoreServiceImpl(
 
     override fun create(req: Store): Store {
         val owner = userContext.getCurrentUser() ?: throw CustomException(403, "Something went wrong please try again.")
-        if (storeRepo.existsByOwnerId(owner.id!!))  throw CustomException(400, "MF, you already had a store!")
+        if (storeRepo.existsByOwnerId(owner.id!!))  throw CustomException(400, "MF, you already have a store!")
         if (storeRepo.existsByName(req.name!!)) throw CustomException(400, "Try different name!")
-        val sown = userRepo.findById(owner.id!!).orElseThrow { CustomException(404, "User not found") }
+        val sown = userRepo.findById(owner.id).orElseThrow { CustomException(404, "User not found") }
         req.owner = sown
         return storeRepo.save(req)
     }
@@ -61,7 +64,6 @@ class StoreServiceImpl(
         val store = storeRepo.findById(req).orElseThrow { CustomException(404, "Store not found") }
         storeRepo.delete(store)
     }
-
 
     private fun checkStoreOwner(): Store {
         val owner = userContext.getCurrentUser() ?: throw CustomException(403, "Something went wrong please try again.")

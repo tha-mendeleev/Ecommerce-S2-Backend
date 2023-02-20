@@ -33,7 +33,11 @@ class AuthController(private val authService: AuthService, ) {
         authenticationManager.authenticate(UsernamePasswordAuthenticationToken(user.email, req.passwd))
         val token = jwtToken.generateToken(user)
         return response.responseObject(
-            mapOf( "token" to token, "role" to "${user.authorities?.map {it.authority}}")
+            mapOf(
+                "token" to token,
+                "role" to "${user.authorities?.map {it.authority}}",
+                "user" to mapOf("name" to user.userName, "id" to user.id)
+            )
         )
     }
 

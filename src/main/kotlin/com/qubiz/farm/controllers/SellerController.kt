@@ -24,6 +24,11 @@ class SellerController(
         return response.responseObject(storeService.create(req))
     }
 
+    @GetMapping("/store")
+    fun getStoreDetail(): Any {
+        return response.responseObject(storeService.getStoreDetailByOwner())
+    }
+
     @PostMapping("/category")
     fun createCategory(@RequestBody req: Category): Any {
         return response.responseObject(categoryService.create(req), 201, "Created")
