@@ -34,4 +34,6 @@ interface ProductRepo: BaseRepo<Product, Long> {
         """
     )
     fun findAllByCategory(categoryId: Long, pageable: Pageable): Page<Product>
+
+
 }

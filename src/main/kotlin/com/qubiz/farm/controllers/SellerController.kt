@@ -39,14 +39,32 @@ class SellerController(
         return response.responseObject(categoryService.update(id, req), 201, "Updated")
     }
 
+    @PostMapping("/category/remove/{id}")
+    fun deleteCategory(@PathVariable id: Long): Any {
+        return categoryService.delete(id)
+    }
+
     @GetMapping("/category/dropdown")
     fun getCategoryDropdown(): Any {
         return response.responseObject(categoryService.getDropdown())
     }
 
+    @GetMapping("/category")
+    fun getCategoryQuery(
+        @RequestParam query: String,
+        @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") size: Int
+    ): Any {
+        return categoryService.queryList(query, page, size)
+    }
+
     @PostMapping("/product")
     fun createProduct(@RequestBody req: manageProductRequest): Any {
         return response.responseObject(productService.createProduct(req))
+    }
+
+    @GetMapping("/product/{id}")
+    fun getProductDetailBySeller(@PathVariable id: Long): Map<String, Any> {
+        return productService.getProductDetailBySeller(id)
     }
 
     @PutMapping("/product/{id}")
@@ -55,7 +73,7 @@ class SellerController(
     }
 
     @GetMapping("/product/list")
-    fun getProductList(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "20") size:Int): Any {
+    fun getProductList(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "20") size: Int): Any {
         return productService.getProductListPageByStore(page, size)
     }
 }

@@ -4,6 +4,7 @@ import com.qubiz.farm.dto.Response
 import com.qubiz.farm.dto.request.manageProductRequest
 import com.qubiz.farm.dto.response.StoreInProductResponse
 import com.qubiz.farm.dto.response.ViewProductDetailResponse
+import com.qubiz.farm.dto.response.ViewProductDetailSellerResponse
 import com.qubiz.farm.dto.response.ViewProductResponse
 import com.qubiz.farm.exceptions.CustomException
 import com.qubiz.farm.models.domain.Product
@@ -24,6 +25,11 @@ class ProductServiceImpl(
     private val productRepo: ProductRepo,
     private val response: Response
     ): ProductService {
+
+    override fun getProductDetailBySeller(id: Long): Map<String, Any> {
+        val res = productRepo.findById(id).orElseThrow{CustomException(404, "Product not found")}
+        return response.responseObject(res.pToDetailSellerResponse())
+    }
 
     override fun getProductById(id: Long): ViewProductDetailResponse {
         return productRepo.findById(id).orElseThrow { CustomException(404, "Product not found") }.pToDetailResponse()
@@ -128,6 +134,17 @@ class ProductServiceImpl(
             this.store?.name,
             this.store?.profileImage
         ),
+        this.images?.map { it.filename!! }
+    )
+
+    private fun Product.pToDetailSellerResponse() = ViewProductDetailSellerResponse(
+        this.id,
+        this.name,
+        this.qty,
+        this.sold,
+        this.price,
+        this.description,
+        this.categories,
         this.images?.map { it.filename!! }
     )
 }

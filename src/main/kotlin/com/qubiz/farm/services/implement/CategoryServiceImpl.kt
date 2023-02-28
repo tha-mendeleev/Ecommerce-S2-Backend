@@ -9,13 +9,17 @@ import com.qubiz.farm.utills.UploadImage
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
+import javax.persistence.criteria.Predicate
+import kotlin.collections.ArrayList
 
 @Service
 class CategoryServiceImpl(
     private val categoryRepo: CategoryRepo,
     private val response: Response
-    ): CategoryService {
+) : CategoryService {
 
     @Value("\${category-image-path}")
     private lateinit var cateImageDir: String
@@ -29,8 +33,13 @@ class CategoryServiceImpl(
         return response.responseObject(res.content, res.totalElements)
     }
 
-    override fun getList(): List<Category> {
-        return categoryRepo.findAll()
+    override fun queryList(query: String, page: Int, size: Int): Map<String, Any> {
+        val cats = categoryRepo.findAll(
+            { root, _, cb ->
+                cb.like(cb.lower(root.get("name")), "%${query.lowercase(Locale.getDefault())}%")
+            }, PageRequest.of(page, size)
+        )
+        return response.responseObject(cats.content, cats.totalElements)
     }
 
     override fun uploadImages(filename: MultipartFile, categoryId: Long): Map<String, Any> {
@@ -57,12 +66,21 @@ class CategoryServiceImpl(
         return categoryRepo.save(req)
     }
 
+    @Transactional
     override fun update(req: Category): Category {
         return Category()
     }
 
-    override fun remove(req: Long) {
-        val cat = categoryRepo.findById(req).orElseThrow { CustomException(404, "Category not found") }
+    override fun delete(id: Long): Map<String, Any> {
+        val cat = categoryRepo.findById(id).orElseThrow { CustomException(404, "Category not found") }
+        if (cat.imageFileName != null)
+            UploadImage.removeImage(cat.imageFileName!!, cateImageDir)
         categoryRepo.delete(cat)
+        return response.responseCodeWithMessage(200, "Success")
+    }
+
+    @Transactional
+    override fun remove(req: Long) {
+
     }
 }

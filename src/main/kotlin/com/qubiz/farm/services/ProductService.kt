@@ -6,6 +6,8 @@ import com.qubiz.farm.dto.response.ViewProductResponse
 
 interface ProductService {
 
+
+    fun getProductDetailBySeller(id: Long): Map<String, Any>
     fun getProductById(id: Long): ViewProductDetailResponse
     /** For user view store's product*/
     fun getStoreProductListByCustomer(storeId: Long, page: Int, size: Int): Map<String, Any>
