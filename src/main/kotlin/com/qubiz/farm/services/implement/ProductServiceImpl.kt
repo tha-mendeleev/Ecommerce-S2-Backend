@@ -10,6 +10,7 @@ import com.qubiz.farm.exceptions.CustomException
 import com.qubiz.farm.models.domain.Product
 import com.qubiz.farm.repos.ProductRepo
 import com.qubiz.farm.repos.StoreRepo
+import com.qubiz.farm.services.ProductImageService
 import com.qubiz.farm.services.ProductService
 import com.qubiz.farm.utills.UserContext
 import org.springframework.data.domain.PageRequest
@@ -23,7 +24,8 @@ class ProductServiceImpl(
     private val userContext: UserContext,
     private val storeRepo: StoreRepo,
     private val productRepo: ProductRepo,
-    private val response: Response
+    private val response: Response,
+    private val productImageService: ProductImageService
     ): ProductService {
 
     override fun getProductDetailBySeller(id: Long): Map<String, Any> {
@@ -107,9 +109,11 @@ class ProductServiceImpl(
         return productRepo.save(pro).pToResponse()
     }
 
-    override fun remove(req: Long) {
+    override fun remove(req: Long): Map<String, Any> {
         val pro = productRepo.findById(req).orElseThrow { CustomException(400, "Product not found")}
-        return productRepo.delete(pro)
+        pro.images?.forEach { productImageService.remove(it.filename!!) }
+        productRepo.delete(pro)
+        return response.responseCodeWithMessage(200, "Success")
     }
 
     private fun Product.pToResponse() = ViewProductResponse(

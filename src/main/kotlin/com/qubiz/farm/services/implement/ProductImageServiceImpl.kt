@@ -45,8 +45,8 @@ class ProductImageServiceImpl(
         return response.responseObject(productImageRepo.save(img))
     }
 
-    override fun remove(id: Long) {
-        val img = productImageRepo.findById(id).orElseThrow { CustomException(400, "Image not found") }
+    override fun remove(filename: String) {
+        val img = productImageRepo.findByFilename(filename) ?: throw CustomException(400, "Image not found")
         UploadImage.removeImage(img.filename!!, productPath)
         productImageRepo.delete(img)
     }

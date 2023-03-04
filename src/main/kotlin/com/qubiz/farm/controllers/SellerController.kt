@@ -76,4 +76,9 @@ class SellerController(
     fun getProductList(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "20") size: Int): Any {
         return productService.getProductListPageByStore(page, size)
     }
+
+    @PostMapping("/product/remove/{id}")
+    fun removeProduct(@PathVariable id: Long): Any {
+        return productService.remove(id)
+    }
 }

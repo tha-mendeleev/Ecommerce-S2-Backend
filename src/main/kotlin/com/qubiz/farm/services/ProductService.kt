@@ -21,6 +21,6 @@ interface ProductService {
     fun searchProduct(startPrice: Double?, toPrice: Double?, query: String, page: Int, size: Int): Map<String, Any>
     fun searchProductByCategory(categoryId: Long, page: Int, size: Int): Map<String, Any>
     fun update(id: Long, req: manageProductRequest): ViewProductResponse
-    fun remove(req: Long)
+    fun remove(req: Long): Map<String, Any>
 
 }

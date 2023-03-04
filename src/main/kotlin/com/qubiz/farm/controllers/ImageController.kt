@@ -34,9 +34,9 @@ class ImageController(
         return productImageService.update(filename, file)
     }
 
-    @PostMapping("/product/remove-image/{imgId}")
-    fun removeProductImage(@PathVariable imgId: Long): Any {
-        productImageService.remove(imgId)
+    @PostMapping("/product/remove-image/{filename:.+}")
+    fun removeProductImage(@PathVariable filename: String): Any {
+        productImageService.remove(filename)
         return response.responseCodeWithMessage(200, "Success")
     }
 

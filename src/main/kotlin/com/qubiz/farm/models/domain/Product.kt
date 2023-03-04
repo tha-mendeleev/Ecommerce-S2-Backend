@@ -13,7 +13,7 @@ data class Product(
     var price: Double? = 0.0,
     var description: String? = null,
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var images: MutableList<ProductImage>? = null,
 
     @ManyToOne
